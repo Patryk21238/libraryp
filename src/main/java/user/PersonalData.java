@@ -7,6 +7,14 @@ public class PersonalData {
     private String phoneNumber;
     private Address address;
 
+    public PersonalData(String firstName, String lastName, String pesel, String phoneNumber, Address address) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.pesel = pesel;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
     public String getFirstName() {
         return firstName;
     }

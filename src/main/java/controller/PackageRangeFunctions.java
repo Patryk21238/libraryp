@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class PackageRangeFunctions {
@@ -8,10 +9,20 @@ public class PackageRangeFunctions {
         return scann.nextLine();
     }
 
-
-    //trzeba sprawdzic czy wprowadzona wartość jest typu int
     public static Integer scannInt() {
         Scanner scann = new Scanner(System.in);
-        return scann.nextInt();
+        Integer tmp = 0;
+        boolean valid = true;
+        do {
+            try {
+                tmp = scann.nextInt();
+                valid = false;
+            } catch (InputMismatchException exception) {
+                System.out.println("Wrong number! Type again \n\t");
+                scann.nextLine();
+            }
+        } while (valid);
+
+        return tmp;
     }
 }

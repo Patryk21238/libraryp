@@ -1,16 +1,21 @@
 package user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfile {
     private Long id;
     private PersonalData personalData;
-    private List<Integer> borrowedBooksId;
-    private List<Integer> borrowedMagazinesId;
-    private List<Integer> borrowedFilmsId;
+    private List<Integer> borrowedBooksId = new ArrayList<>();
+    private List<Integer> borrowedMagazinesId = new ArrayList<>();
+    private List<Integer> borrowedFilmsId = new ArrayList<>();
 
     public UserProfile() {
+    }
 
+    public UserProfile(Long id, PersonalData personalData) {
+        this.id = id;
+        this.personalData = personalData;
     }
 
     public Long getId() {

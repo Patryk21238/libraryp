@@ -5,39 +5,36 @@ import user.UserProfile;
 import static controller.PackageRangeFunctions.scannString;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
-//stream trzeba wrzućić do try catch i obsłużyć nullpointerexception/nosuchelementexception
 public class UserController {
-    public static UserProfile pickUserByPesel(List<UserProfile> userProfiles) {
-        UserProfile userProfile = new UserProfile();
-        System.out.print("Podaj numer pesel użytkownika: ");
-        String userPeselNumber = scannString();
+        public static UserProfile pickUserByPesel(List<UserProfile> userProfiles) {
+                UserProfile userProfile = new UserProfile();
+                System.out.print("Podaj numer pesel użytkownika: ");
 
-        userProfile = userProfiles.stream()
-                .filter(u ->
-                        u.getPersonalData()
-                                .getPesel()
-                                .equals(userPeselNumber))
-                .findAny()
-                .get();
+                boolean valid = true;
+                do {
+                        try {
+                                String userPeselNumber = scannString();
+                                userProfile = userProfiles.stream()
+                                                .filter(u -> u.getPersonalData().getPesel().equals(userPeselNumber))
+                                                .findAny().get();
+                                valid = false;
+                        } catch (NoSuchElementException exception) {
+                                System.out.println("Zły numer, wpisz ponownie \n\t");
+                        }
+                } while (valid);
 
-        return userProfile;
-    }
+                return userProfile;
+        }
 
-    public static UserProfile pickUserById(List<UserProfile> userProfiles, long userId) {
-        UserProfile userProfile = new UserProfile();
-        System.out.print("Podaj numer pesel użytkownika: ");
+        public static UserProfile pickUserById(List<UserProfile> userProfiles, long userId) {
+                UserProfile userProfile = new UserProfile();
+                System.out.print("Podaj numer pesel użytkownika: ");
 
+                userProfile = userProfiles.stream().filter(u -> u.getId().equals(userId)).findAny().get();
 
-        userProfile = userProfiles.stream()
-                .filter(u ->
-                        u.getId()
-                                .equals(userId))
-                .findAny()
-                .get();
-
-        return userProfile;
-    }
-
+                return userProfile;
+        }
 
 }

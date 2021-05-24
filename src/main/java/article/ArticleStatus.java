@@ -1,6 +1,5 @@
 package article;
 
-public enum  ArticleStatus {
-    AVAILABLE,
-    LENTED;
+public enum ArticleStatus {
+    AVAILABLE, LENTED;
 }

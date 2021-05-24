@@ -1,3 +1,22 @@
 # Project exclude paths
 /target/
 .idea
+src/main/java/user/UserProfile.class
+src/main/java/Main.class
+src/main/java/article/ArticleStatus.class
+src/main/java/article/types/Magazine.class
+src/main/java/controller/MainController.class
+src/main/java/article/types/Book.class
+src/main/java/controller/PackageRangeFunctions.class
+src/main/java/user/PersonalData.class
+src/main/java/controller/ArticleController.class
+src/main/java/controller/UserController.class
+src/main/java/article/types/Film.class
+src/main/java/article/Article.class
+src/main/java/user/Address.class
+.settings/org.eclipse.jdt.apt.core.prefs
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.m2e.core.prefs
+.project
+.gitignore
+.classpath

@@ -63,11 +63,7 @@ public abstract class Article {
 
     @Override
     public String toString() {
-        return "ID: " + id +
-                " TYTUŁ: " + title +
-                " AUTORZY: " + authors +
-                " STATUS: " + articleStatus +
-                " ID WYPOŻYCZAJĄCEJO: " + borrowerId +
-                " DATA OSTATNIEGO WYPOŻYCZENIA: " + dateOfLastLoan;
+        return "ID: " + id + " TYTUŁ: " + title + " AUTORZY: " + authors + " STATUS: " + articleStatus
+                + " ID WYPOŻYCZAJĄCEJO: " + borrowerId + " DATA OSTATNIEGO WYPOŻYCZENIA: " + dateOfLastLoan;
     }
 }
