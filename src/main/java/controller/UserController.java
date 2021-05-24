@@ -7,6 +7,7 @@ import static controller.PackageRangeFunctions.scannString;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+// do ogarniecia jeszcze 
 public class UserController {
         public static UserProfile pickUserByPesel(List<UserProfile> userProfiles) {
                 UserProfile userProfile = new UserProfile();
