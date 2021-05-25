@@ -108,7 +108,7 @@ public class ArticleController {
         do {
             System.out.printf("Wpisz swój Pesel \n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11))
+            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11) && checkForExisPesel(userProfiles, tmp))
                 valid = false;
             else {
                 System.out.printf("Zły Pesel, wpisz ponownie\n\t:");
@@ -190,6 +190,20 @@ public class ArticleController {
 
     }
 
+    public static boolean checkForExisPesel(List<UserProfile> userProfiles, String pesel) {
+
+        for (UserProfile user : userProfiles) {
+            PersonalData personalDataOfUser = user.getPersonalData();
+            if (pesel == personalDataOfUser.getPesel()) {
+                return false;
+            }
+
+        }
+
+        return true;
+
+    }
+
     public static void lendArticle(List<Book> books, List<Magazine> magazines, List<Film> films,
             List<UserProfile> userProfiles) {
         UserProfile user;
@@ -215,40 +229,62 @@ public class ArticleController {
             }
         } while (valid);
         valid = true;
-        System.out.print("Podaj id artykułu :");
-        int id;
-        do {
-            id = scannInt();
-            if (id > 0 && inputNumber == 1 && books.size() >= id) {
-                valid = false;
-            }
-            if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
-                valid = false;
-            }
-            if (id > 0 && inputNumber == 3 && films.size() >= id) {
-                valid = false;
-            }
-            if (valid) {
-                System.out.print("Zla wartość! Podaj jeszcze raz");
-            }
-        } while (valid);
+        boolean checkForEmpty = false;
+        if (inputNumber == 1 && books.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 2 && magazines.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 3 && films.isEmpty())
+            checkForEmpty = true;
+        if (!checkForEmpty) {
+            System.out.print("Podaj id artykułu :");
+            int id;
+            do {
+                id = scannInt();
+                if (id > 0 && inputNumber == 1 && books.size() >= id) {
+                    valid = false;
+                }
+                if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
+                    valid = false;
+                }
+                if (id > 0 && inputNumber == 3 && films.size() >= id) {
+                    valid = false;
+                }
+                if (valid) {
+                    System.out.print("Zla wartość! Podaj jeszcze raz");
+                }
+            } while (valid);
 
-        switch (inputNumber) {
-            case 0:
-                break;
-            case 1:
-                lendBook(books, user, id - 1);
-                break;
-            case 2:
-                lendMagazine(magazines, user, id - 1);
-                break;
-            case 3:
-                lendFilm(films, user, id - 1);
-                break;
+            switch (inputNumber) {
+                case 0:
+                    break;
+                case 1:
+                    if (books.get(id - 1).getBorrowerId() == null)
+                        lendBook(books, user, id - 1);
+                    else {
+                        System.out.print("Ksiązka została już wypożyczona");
+                    }
+                    break;
+                case 2:
+                    if (magazines.get(id - 1).getBorrowerId() == null)
+                        lendMagazine(magazines, user, id - 1);
+                    else {
+                        System.out.print("Magazyn został już wypożyczony");
+                    }
 
-            default:
-                System.err.println("Podaj prawidłową wartość!");
-                break;
+                    break;
+                case 3:
+                    if (films.get(id - 1).getBorrowerId() == null)
+                        lendFilm(films, user, id - 1);
+                    else {
+                        System.out.print("Film został już wypożyczony");
+                    }
+                    break;
+
+                default:
+                    System.err.println("Podaj prawidłową wartość!");
+                    break;
+            }
         }
 
     }
@@ -267,29 +303,35 @@ public class ArticleController {
                 System.out.print("Zla wartość! Podaj jeszcze raz");
             }
         } while (valid);
+        boolean checkForEmpty = false;
+        if (inputNumber == 1 && books.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 2 && magazines.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 3 && films.isEmpty())
+            checkForEmpty = true;
         valid = true;
-        System.out.print("Podaj id artykułu do zwrotu:");
-        int atricleId;
-        do {
-            atricleId = scannInt();
-            if (atricleId > 0 && inputNumber == 1 && books.size() >= atricleId) {
-                valid = false;
-            }
-            if (atricleId > 0 && inputNumber == 2 && magazines.size() >= atricleId) {
-                valid = false;
-            }
-            if (atricleId > 0 && inputNumber == 3 && films.size() >= atricleId) {
-                valid = false;
-            }
-            if (valid) {
-                System.out.print("Zla wartość! Podaj jeszcze raz");
-            }
-        } while (valid);
-        do {
-            inputNumber = scannInt();
+        if (!checkForEmpty) {
+            System.out.print("Podaj id artykułu do zwrotu:");
+            int atricleId;
+            do {
+                atricleId = scannInt();
+                if (atricleId > 0 && inputNumber == 1 && books.size() >= atricleId) {
+                    valid = false;
+                }
+                if (atricleId > 0 && inputNumber == 2 && magazines.size() >= atricleId) {
+                    valid = false;
+                }
+                if (atricleId > 0 && inputNumber == 3 && films.size() >= atricleId) {
+                    valid = false;
+                }
+                if (valid) {
+                    System.out.print("Zla wartość! Podaj jeszcze raz");
+                }
+            } while (valid);
+
             switch (inputNumber) {
-                case 0:
-                    break;
+
                 case 1:
                     returnBook(books, atricleId - 1, userProfiles);
                     break;
@@ -299,13 +341,12 @@ public class ArticleController {
                 case 3:
                     returnFilm(films, atricleId - 1, userProfiles);
                     break;
-
-                default:
-                    System.err.println("Podaj prawidłową wartość!");
-                    break;
             }
 
-        } while (inputNumber < 0 || inputNumber > 3);
+        } else {
+            System.out.print("Nie mamy żadnej pozycji do zwrotu\n\t");
+        }
+
     }
 
     public static void printArticlesList(List<Book> books, List<Magazine> magazines, List<Film> films) {
@@ -413,7 +454,7 @@ public class ArticleController {
     private static void deleteAllArticlesByTitle(List<Book> books, List<Magazine> magazines, List<Film> films) {
         System.out.print("Podaj tytuł artykułu do usunięcia:");
         String articleTittle = scannString();
-        System.out.printf("Wybierz typ artykułu jaki chcesz usunąć:" + pickMessage);
+        System.out.printf("Wybierz typ artykułu jaki chcesz usunąć:" + "1. Książke, 2.Magazyn, 3.Film \n\t");
         int inputNumber;
         do {
             inputNumber = scannInt();
@@ -466,36 +507,47 @@ public class ArticleController {
         valid = true;
         System.out.print("Podaj id artykułu do usunięcia:");
         int id;
-        do {
-            id = scannInt();
-            if (id > 0 && inputNumber == 1 && books.size() >= id) {
-                valid = false;
-            }
-            if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
-                valid = false;
-            }
-            if (id > 0 && inputNumber == 3 && films.size() >= id) {
-                valid = false;
-            }
-            if (valid) {
-                System.out.print("Zla wartość! Podaj jeszcze raz");
-            }
-        } while (valid);
+        boolean checkForEmpty = false;
+        if (inputNumber == 1 && books.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 2 && magazines.isEmpty())
+            checkForEmpty = true;
+        if (inputNumber == 3 && films.isEmpty())
+            checkForEmpty = true;
+        if (!checkForEmpty) {
+            do {
+                id = scannInt();
+                if (id > 0 && inputNumber == 1 && books.size() >= id) {
+                    valid = false;
+                }
+                if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
+                    valid = false;
+                }
+                if (id > 0 && inputNumber == 3 && films.size() >= id) {
+                    valid = false;
+                }
+                if (valid) {
+                    System.out.print("Zla wartość! Podaj jeszcze raz\n\t");
+                }
+            } while (valid);
 
-        switch (inputNumber) {
-            case 1:
-                books.remove(id - 1);
-                break;
-            case 2:
-                magazines.remove(id - 1);
-                break;
-            case 3:
-                films.remove(id - 1);
-                break;
-            default:
-                break;
+            switch (inputNumber) {
+                case 1:
+                    books.remove(id - 1);
+                    break;
+                case 2:
+                    magazines.remove(id - 1);
+                    break;
+                case 3:
+                    films.remove(id - 1);
+                    break;
+                default:
+                    break;
+            }
+            System.out.print("Poprawnie usunięto!\n\t");
+        } else {
+            System.out.print("Nie ma nic do usunięcia!\n\t");
         }
-        System.out.print("Poprawnie usunięto!\n\t");
     }
 
     private static void returnFilm(List<Film> films, int id, List<UserProfile> userProfiles) {
@@ -507,12 +559,17 @@ public class ArticleController {
     }
 
     private static void deleteIdElementFromUserBorrowedFilms(List<UserProfile> userProfiles, Film tempFilm) {
-        UserProfile user = UserController.pickUserById(userProfiles, tempFilm.getBorrowerId());
-        List<Integer> tempBorrowedIdList = user.getBorrowedFilmsId();
-        Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempFilm.getId()).findFirst().get();
-        tempBorrowedIdList.remove(t);
+        try {
+            UserProfile user = UserController.pickUserById(userProfiles, tempFilm.getBorrowerId());
+            List<Integer> tempBorrowedIdList = user.getBorrowedFilmsId();
+            Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempFilm.getId()).findFirst().get();
+            tempBorrowedIdList.remove(t);
 
-        user.setBorrowedFilmsId(tempBorrowedIdList);
+            user.setBorrowedFilmsId(tempBorrowedIdList);
+        } catch (NullPointerException exception) {
+            System.out.println("Nie ma takiego wypożyczonego id lub zostało już oddane, sprawdż status! \n\t");
+
+        }
     }
 
     private static void returnMagazine(List<Magazine> magazines, int id, List<UserProfile> userProfiles) {
@@ -525,12 +582,17 @@ public class ArticleController {
 
     private static void deleteIdElementFromUserBorrowedMagazines(List<UserProfile> userProfiles,
             Magazine tempMagazine) {
-        UserProfile user = UserController.pickUserById(userProfiles, tempMagazine.getBorrowerId());
-        List<Integer> tempBorrowedIdList = user.getBorrowedMagazinesId();
-        Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempMagazine.getId()).findFirst().get();
-        tempBorrowedIdList.remove(t);
+        try {
+            UserProfile user = UserController.pickUserById(userProfiles, tempMagazine.getBorrowerId());
+            List<Integer> tempBorrowedIdList = user.getBorrowedMagazinesId();
+            Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempMagazine.getId()).findFirst().get();
+            tempBorrowedIdList.remove(t);
 
-        user.setBorrowedMagazinesId(tempBorrowedIdList);
+            user.setBorrowedMagazinesId(tempBorrowedIdList);
+        } catch (NullPointerException exception) {
+            System.out.println("Nie ma takiego wypożyczonego id lub zostało już oddane, sprawdż status! \n\t");
+
+        }
     }
 
     private static void returnBook(List<Book> books, int id, List<UserProfile> userProfiles) {
@@ -542,12 +604,17 @@ public class ArticleController {
     }
 
     private static void deleteIdElementFromUserBorrowedBooks(List<UserProfile> userProfiles, Book tempBook) {
-        UserProfile user = UserController.pickUserById(userProfiles, tempBook.getBorrowerId());
-        List<Integer> tempBorrowedIdList = user.getBorrowedBooksId();
-        Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempBook.getId()).findFirst().get();
-        tempBorrowedIdList.remove(t);
 
-        user.setBorrowedBooksId(tempBorrowedIdList);
+        try {
+            UserProfile user = UserController.pickUserById(userProfiles, tempBook.getBorrowerId());
+            List<Integer> tempBorrowedIdList = user.getBorrowedBooksId();
+            Integer t = tempBorrowedIdList.stream().filter(e -> e.intValue() != tempBook.getId()).findFirst().get();
+            tempBorrowedIdList.remove(t);
+            user.setBorrowedBooksId(tempBorrowedIdList);
+        } catch (NullPointerException exception) {
+            System.out.println("Nie ma takiego wypożyczonego id lub zostało już oddane, sprawdż status! \n\t");
+
+        }
     }
 
     private static void lendBook(List<Book> books, UserProfile user, int id) {
