@@ -69,156 +69,93 @@ public class ArticleController {
         } while (inputNumber != 0);
     }
 
-    public static void addUser(List<UserProfile> userProfiles) {
-        String tmp = "";
-        Long newId = Long.valueOf(userProfiles.size() + 1);
-        String name;
-        String surname;
-        String pesel;
-        String phoneNumber;
-        String city;
-        String street;
-        String buldingNumber;
-        String zipCode;
-        boolean valid = true;
-        do {
-            System.out.printf("Wpisz swoje imię\n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
-                valid = false;
-            else {
-                System.out.printf("Złe imię, wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        name = tmp;
-        valid = true;
-        do {
-            System.out.printf("Wpisz swoje nazwisko\n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
-                valid = false;
-            else {
-                System.out.printf("Złe nazwisko, wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        surname = tmp;
-        valid = true;
-        do {
-            System.out.printf("Wpisz swój Pesel \n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11) && checkForExisPesel(userProfiles, tmp))
-                valid = false;
-            else {
-                System.out.printf("Zły Pesel, wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        pesel = tmp;
-
-        valid = true;
-        do {
-            System.out.printf("Wpisz swój numer Telefonu bez kierunkowego \n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 9))
-                valid = false;
-            else {
-                System.out.printf("Zły numer telefonu, wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-
-        phoneNumber = tmp;
-
-        valid = true;
-        do {
-            System.out.printf("Wpisz swoje miasto/miejscowość zamieszkania \n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
-                valid = false;
-            else {
-                System.out.printf("Złe miasto/miejscowość , wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        city = tmp;
-        valid = true;
-        do {
-            System.out.printf("Wpisz swoją ulice lub pomiń gdy nie masz takowej \n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, true))
-                valid = false;
-            else {
-                System.out.printf("Zła ulica , wpisz ponownie\n\t:");
-            }
-            if (tmp.length() == 0) {
-                tmp = " ";
-            }
-
-        } while (valid);
-        street = tmp;
-        valid = true;
-        do {
-            System.out.printf(
-                    "Wpisz swój numer domu w formacie 3 cyfr. Jeśli twój numer domu to przykładowo 20 to wpisz 020\n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 3))
-                valid = false;
-            else {
-                System.out.printf("Zły numer domu , wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        buldingNumber = tmp;
-        valid = true;
-        do {
-            System.out.printf("Wpisz swój kod pocztowy składający się z samych cyfr\n\t:");
-            tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 5))
-                valid = false;
-            else {
-                System.out.printf("Zły kod pocztowy, wpisz ponownie\n\t:");
-            }
-
-        } while (valid);
-        zipCode = tmp;
-        Address address = new Address(city, street, buldingNumber, zipCode);
-        PersonalData personalData = new PersonalData(name, surname, pesel, phoneNumber, address);
-        userProfiles.add(new UserProfile(newId, personalData));
-        System.err.println("Poprawnie dodano użytkownika!");
-
-    }
-
-    public static boolean checkForExisPesel(List<UserProfile> userProfiles, String pesel) {
-
-        for (UserProfile user : userProfiles) {
-            PersonalData personalDataOfUser = user.getPersonalData();
-            if (pesel == personalDataOfUser.getPesel()) {
-                return false;
-            }
-
-        }
-
-        return true;
-
-    }
-
     public static void lendArticle(List<Book> books, List<Magazine> magazines, List<Film> films,
             List<UserProfile> userProfiles) {
-        UserProfile user;
 
-        if (userProfiles.isEmpty()) {
-            System.out.printf("Nie ma żadnego użytkownika w bazie przekierowuje do rejestracji nowego użytkownika\n\t");
-            ArticleController.addUser(userProfiles);
-            user = UserController.pickUserByPesel(userProfiles);
-        } else {
-            user = UserController.pickUserByPesel(userProfiles);
-        }
+        UserProfile user;
+        addNewUserIfUserListIsEmpty(userProfiles);
+        user = UserController.pickUserByPesel(userProfiles);
 
         System.out.printf("Wybierz typ artykułu jaki do wypożyczenia:" + "1.Książke, 2.Magazyn, 3 Film\n\t");
+        int inputNumber = pickArticleType();
+        boolean listIsEmpty = checkIfListIsEmpty(books, magazines, films, inputNumber);
+
+        if (!listIsEmpty) {
+            int id = pickId(books, magazines, films, inputNumber,  "Podaj id artykułu: ");
+            choseArticleToLend(books, magazines, films, user, inputNumber, id);
+        }
+
+    }
+
+    private static void choseArticleToLend(List<Book> books, List<Magazine> magazines, List<Film> films, UserProfile user, int inputNumber, int id) {
+        switch (inputNumber) {
+            case 0:
+                break;
+            case 1:
+                if (books.get(id - 1).getBorrowerId() == null)
+                    lendBook(books, user, id - 1);
+                else {
+                    System.out.print("Ksiązka została już wypożyczona");
+                }
+                break;
+            case 2:
+                if (magazines.get(id - 1).getBorrowerId() == null)
+                    lendMagazine(magazines, user, id - 1);
+                else {
+                    System.out.print("Magazyn został już wypożyczony");
+                }
+
+                break;
+            case 3:
+                if (films.get(id - 1).getBorrowerId() == null)
+                    lendFilm(films, user, id - 1);
+                else {
+                    System.out.print("Film został już wypożyczony");
+                }
+                break;
+
+            default:
+                System.err.println("Podaj prawidłową wartość!");
+                break;
+        }
+    }
+
+    private static int pickId(List<Book> books, List<Magazine> magazines, List<Film> films, int inputNumber, String s) {
+        System.out.print(s);
+        int id;
         boolean valid = true;
+        do {
+            id = scannInt();
+            if (id > 0 && inputNumber == 1 && books.size() >= id) {
+                valid = false;
+            }
+            if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
+                valid = false;
+            }
+            if (id > 0 && inputNumber == 3 && films.size() >= id) {
+                valid = false;
+            }
+            if (valid) {
+                System.out.print("Zla wartość! Podaj jeszcze raz");
+            }
+        } while (valid);
+        return id;
+    }
+
+    private static boolean checkIfListIsEmpty(List<Book> books, List<Magazine> magazines, List<Film> films, int inputNumber) {
+        boolean listIsEmpty = false;
+        if (inputNumber == 1 && books.isEmpty())
+            listIsEmpty = true;
+        if (inputNumber == 2 && magazines.isEmpty())
+            listIsEmpty = true;
+        if (inputNumber == 3 && films.isEmpty())
+            listIsEmpty = true;
+        return listIsEmpty;
+    }
+
+    private static int pickArticleType() {
         int inputNumber;
+        boolean valid = true;
         do {
             inputNumber = scannInt();
             if (inputNumber > 0 && inputNumber < 4) {
@@ -228,110 +165,27 @@ public class ArticleController {
                 System.out.print("Zla wartość! Podaj jeszcze raz");
             }
         } while (valid);
-        valid = true;
-        boolean checkForEmpty = false;
-        if (inputNumber == 1 && books.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 2 && magazines.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 3 && films.isEmpty())
-            checkForEmpty = true;
-        if (!checkForEmpty) {
-            System.out.print("Podaj id artykułu :");
-            int id;
-            do {
-                id = scannInt();
-                if (id > 0 && inputNumber == 1 && books.size() >= id) {
-                    valid = false;
-                }
-                if (id > 0 && inputNumber == 2 && magazines.size() >= id) {
-                    valid = false;
-                }
-                if (id > 0 && inputNumber == 3 && films.size() >= id) {
-                    valid = false;
-                }
-                if (valid) {
-                    System.out.print("Zla wartość! Podaj jeszcze raz");
-                }
-            } while (valid);
 
-            switch (inputNumber) {
-                case 0:
-                    break;
-                case 1:
-                    if (books.get(id - 1).getBorrowerId() == null)
-                        lendBook(books, user, id - 1);
-                    else {
-                        System.out.print("Ksiązka została już wypożyczona");
-                    }
-                    break;
-                case 2:
-                    if (magazines.get(id - 1).getBorrowerId() == null)
-                        lendMagazine(magazines, user, id - 1);
-                    else {
-                        System.out.print("Magazyn został już wypożyczony");
-                    }
+        return inputNumber;
+    }
 
-                    break;
-                case 3:
-                    if (films.get(id - 1).getBorrowerId() == null)
-                        lendFilm(films, user, id - 1);
-                    else {
-                        System.out.print("Film został już wypożyczony");
-                    }
-                    break;
-
-                default:
-                    System.err.println("Podaj prawidłową wartość!");
-                    break;
-            }
+    private static void addNewUserIfUserListIsEmpty(List<UserProfile> userProfiles) {
+        if (userProfiles.isEmpty()) {
+            System.out.printf("Nie ma żadnego użytkownika w bazie przekierowuje do rejestracji nowego użytkownika\n\t");
+            UserController.addUser(userProfiles);
         }
-
     }
 
     public static void returnArticle(List<Book> books, List<Magazine> magazines, List<Film> films,
             List<UserProfile> userProfiles) {
         System.out.printf("Wybierz typ artykułu do zwrotu:" + "1.Książke, 2.Magazyn, 3 Film\n\t");
-        boolean valid = true;
-        int inputNumber;
-        do {
-            inputNumber = scannInt();
-            if (inputNumber > 0 && inputNumber < 4) {
-                valid = false;
+        int inputNumber = pickArticleType();
+        boolean checkForEmpty = checkIfListIsEmpty(books, magazines, films, inputNumber);
 
-            } else {
-                System.out.print("Zla wartość! Podaj jeszcze raz");
-            }
-        } while (valid);
-        boolean checkForEmpty = false;
-        if (inputNumber == 1 && books.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 2 && magazines.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 3 && films.isEmpty())
-            checkForEmpty = true;
-        valid = true;
         if (!checkForEmpty) {
-            System.out.print("Podaj id artykułu do zwrotu:");
-            int atricleId;
-            do {
-                atricleId = scannInt();
-                if (atricleId > 0 && inputNumber == 1 && books.size() >= atricleId) {
-                    valid = false;
-                }
-                if (atricleId > 0 && inputNumber == 2 && magazines.size() >= atricleId) {
-                    valid = false;
-                }
-                if (atricleId > 0 && inputNumber == 3 && films.size() >= atricleId) {
-                    valid = false;
-                }
-                if (valid) {
-                    System.out.print("Zla wartość! Podaj jeszcze raz");
-                }
-            } while (valid);
+            int atricleId = pickId(books, magazines, films, inputNumber, "Podaj id artykułu do zwrotu:");
 
             switch (inputNumber) {
-
                 case 1:
                     returnBook(books, atricleId - 1, userProfiles);
                     break;
@@ -373,82 +227,6 @@ public class ArticleController {
             }
 
         } while (inputNumber < 0 || inputNumber > 3);
-    }
-
-    public static void showUserInfo(List<UserProfile> userProfiles, List<Book> books, List<Magazine> magazines,
-            List<Film> films) {
-        System.out.printf("\tWyświetlam użytkowników\n\t");
-        int numberOfUser = 1;
-        for (UserProfile user : userProfiles) {
-            PersonalData actualDataOfUser = user.getPersonalData();
-            System.out.printf(numberOfUser + ". " + actualDataOfUser.getFirstName() + " "
-                    + actualDataOfUser.getLastName() + "\n\t");
-            numberOfUser++;
-        }
-
-        System.out.printf("Wybierz użytkownika do wyświetlenia\n\t:");
-        int inputNumber;
-        do {
-            inputNumber = scannInt();
-            if (inputNumber > 0 && inputNumber <= numberOfUser) {
-                break;
-            }
-            System.out.printf("Podałeś zły numer!\n\t:");
-
-        } while (true);
-        UserProfile chooseUserProfile = userProfiles.get(inputNumber - 1);
-        PersonalData chooseUserPersonalData = chooseUserProfile.getPersonalData();
-        Address chooseUserAddress = chooseUserPersonalData.getAddress();
-        System.out.printf("\n\t Wyświetlam użytkownika: \n\t " + chooseUserPersonalData.getFirstName() + " "
-                + chooseUserPersonalData.getLastName() + " Pesel:" + chooseUserPersonalData.getPesel()
-                + "\n\t Numer telefonu:" + chooseUserPersonalData.getPhoneNumber() + " Adres:"
-                + chooseUserAddress.getCity() + " " + chooseUserAddress.getZipCodeWithFormat() + " "
-                + chooseUserAddress.getStreet() + " " + chooseUserAddress.getBuldingNumber() + "\n\t");
-        System.out.printf("Wyświetlam pożyczone  książki\n\t:");
-        for (Integer id : chooseUserProfile.getBorrowedBooksId()) {
-            System.out.printf("Id:" + id + ". " + books.get(id) + " \n\t");
-        }
-        System.out.printf("\n\tWyświetlam pożyczone magazyny\n\t:");
-        for (Integer id : chooseUserProfile.getBorrowedMagazinesId()) {
-            System.out.printf("Id:" + id + ". " + magazines.get(id) + " \n\t");
-        }
-        System.out.printf("\n\tWyświetlam pożyczone filmy \n\t:");
-        for (Integer id : chooseUserProfile.getBorrowedFilmsId()) {
-            System.out.printf("Id:" + id + ". " + films.get(id) + " \n\t");
-        }
-        System.out.printf("\n\t");
-
-    }
-
-    private static boolean checkIfWordHaveOnlyChar(String forCheck, boolean triggerForAllowZeroLength) {
-        if (!triggerForAllowZeroLength && forCheck.length() == 0)
-            return false;
-        else if (triggerForAllowZeroLength && forCheck.length() == 0) {
-            forCheck = " ";
-            return true;
-        }
-        for (int i = 0; i < forCheck.length(); i++) {
-            char tmpChar = forCheck.charAt(i);
-            if (!Character.isLetter(tmpChar)) {
-                return false;
-            }
-
-        }
-
-        return true;
-    }
-
-    private static boolean checkIfWordHaveOnlyIntAndGoodLenght(String forCheck, int length) {
-        if (length != forCheck.length())
-            return false;
-        for (int i = 0; i < forCheck.length(); i++) {
-            if (!Character.isDigit(forCheck.charAt(i))) {
-                return false;
-            }
-
-        }
-
-        return true;
     }
 
     private static void deleteAllArticlesByTitle(List<Book> books, List<Magazine> magazines, List<Film> films) {
@@ -507,13 +285,7 @@ public class ArticleController {
         valid = true;
         System.out.print("Podaj id artykułu do usunięcia:");
         int id;
-        boolean checkForEmpty = false;
-        if (inputNumber == 1 && books.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 2 && magazines.isEmpty())
-            checkForEmpty = true;
-        if (inputNumber == 3 && films.isEmpty())
-            checkForEmpty = true;
+        boolean checkForEmpty = checkIfListIsEmpty(books, magazines, films, inputNumber);
         if (!checkForEmpty) {
             do {
                 id = scannInt();

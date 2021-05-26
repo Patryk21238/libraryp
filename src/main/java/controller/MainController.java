@@ -40,7 +40,7 @@ public class MainController {
                 ArticleController.deleteArticle(books, magazines, films);
                 break;
             case 3:
-                ArticleController.addUser(userProfiles);
+                UserController.addUser(userProfiles);
                 break;
             case 4:
                 ArticleController.lendArticle(books, magazines, films, userProfiles);
@@ -52,7 +52,7 @@ public class MainController {
                 ArticleController.printArticlesList(books, magazines, films);
                 break;
             case 7:
-                ArticleController.showUserInfo(userProfiles, books, magazines, films);
+                UserController.showUserInfo(userProfiles, books, magazines, films);
                 break;
             default:
                 System.err.println("Podaj prawidłową wartość!");

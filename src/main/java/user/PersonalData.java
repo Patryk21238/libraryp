@@ -7,6 +7,9 @@ public class PersonalData {
     private String phoneNumber;
     private Address address;
 
+
+    public PersonalData() {
+    }
     public PersonalData(String firstName, String lastName, String pesel, String phoneNumber, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
