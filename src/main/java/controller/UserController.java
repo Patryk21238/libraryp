@@ -67,13 +67,17 @@ public class UserController {
     private static String preparePeselNumber(List<UserProfile> userProfiles) {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Zły pesel, wpisz ponownie\n\t:";
         do {
             System.out.printf("Wpisz swój Pesel \n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11) && checkForExisPesel(userProfiles, tmp))
+            try {
+                checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11, errorMessage);
+                checkForExisPesel(userProfiles, tmp, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Zły Pesel, wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
             }
 
         } while (valid);
@@ -83,13 +87,16 @@ public class UserController {
     private static String prepareLastName() {
         boolean valid = true;
         String tmp;
+        String errorMessage = "Złe nazwisko, wpisz ponownie\n\t:";
         do {
             System.out.printf("Wpisz swoje nazwisko\n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
+            try {
+                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Złe nazwisko, wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
             }
 
         } while (valid);
@@ -98,15 +105,18 @@ public class UserController {
     }
 
     private static String prepareFirstName() {
-        String tmp = "";
+        String tmp;
         boolean valid = true;
+        String errorMessage = "Złe imię, wpisz ponownie\n\t:";
         do {
             System.out.printf("Wpisz swoje imię\n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
+            try {
+                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Złe imię, wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
             }
 
         } while (valid);
@@ -117,13 +127,16 @@ public class UserController {
     private static String preparePhoneNumber() {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Zły numer telefonu, wpisz ponownie\n\t:";
         do {
-            System.out.printf("Wpisz swoje miasto/miejscowość zamieszkania \n\t:");
+            System.out.printf("Wpisz swój numer telefonu bez kierunkowego w formacie 9 cyfr \n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
+            try {
+                checkIfWordHaveOnlyIntAndGoodLenght(tmp, 9, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Złe miasto/miejscowość , wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
             }
 
         } while (valid);
@@ -134,13 +147,16 @@ public class UserController {
     private static String prepareCity() {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Złe miasto, wpisz ponownie";
         do {
             System.out.printf("Wpisz swoje miasto/miejscowość zamieszkania \n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, false))
+            try {
+                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Złe miasto/miejscowość , wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
             }
 
         } while (valid);
@@ -150,16 +166,15 @@ public class UserController {
     private static String prepareStreet() {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Zła ulica  , wpisz ponownie";
         do {
             System.out.printf("Wpisz swoją ulice lub pomiń gdy nie masz takowej \n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyChar(tmp, true))
+            try {
+                checkIfWordHaveOnlyChar(tmp, true, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Zła ulica , wpisz ponownie\n\t:");
-            }
-            if (tmp.length() == 0) {
-                tmp = " ";
+            } catch (InvalidInputDataException string) {
+                valid = true;
             }
 
         } while (valid);
@@ -169,14 +184,16 @@ public class UserController {
     private static String prepareBuildingNumber() {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Zły numer domu , wpisz ponownie";
         do {
             System.out.printf(
                     "Wpisz swój numer domu w formacie 3 cyfr. Jeśli twój numer domu to przykładowo 20 to wpisz 020\n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 3))
+            try {
+                checkIfWordHaveOnlyIntAndGoodLenght(tmp, 3, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Zły numer domu , wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
             }
 
         } while (valid);
@@ -186,31 +203,18 @@ public class UserController {
     private static String prepareZipCode() {
         String tmp;
         boolean valid = true;
+        String errorMessage = "Zły kod pocztowy , wpisz ponownie";
         do {
             System.out.printf("Wpisz swój kod pocztowy składający się z samych cyfr\n\t:");
             tmp = scannString();
-            if (checkIfWordHaveOnlyIntAndGoodLenght(tmp, 5))
+            try {
+                checkIfWordHaveOnlyIntAndGoodLenght(tmp, 5, errorMessage);
                 valid = false;
-            else {
-                System.out.printf("Zły kod pocztowy, wpisz ponownie\n\t:");
+            } catch (InvalidInputDataException string) {
+                valid = true;
             }
-
         } while (valid);
         return tmp;
-    }
-
-    public static boolean checkForExisPesel(List<UserProfile> userProfiles, String pesel) {
-
-        for (UserProfile user : userProfiles) {
-            PersonalData personalDataOfUser = user.getPersonalData();
-            if (pesel == personalDataOfUser.getPesel()) {
-                return false;
-            }
-
-        }
-
-        return true;
-
     }
 
     public static void showUserInfo(List<UserProfile> userProfiles, List<Book> books, List<Magazine> magazines,
@@ -258,35 +262,48 @@ public class UserController {
 
     }
 
-    private static boolean checkIfWordHaveOnlyChar(String forCheck, boolean triggerForAllowZeroLength) {
-        if (!triggerForAllowZeroLength && forCheck.length() == 0)
-            return false;
-        else if (triggerForAllowZeroLength && forCheck.length() == 0) {
-            forCheck = " ";
-            return true;
+    public static void checkForExisPesel(List<UserProfile> userProfiles, String pesel, String errorMessage)
+            throws InvalidInputDataException {
+
+        for (UserProfile user : userProfiles) {
+            PersonalData personalDataOfUser = user.getPersonalData();
+            if (pesel == personalDataOfUser.getPesel()) {
+                throw new InvalidInputDataException(errorMessage);
+            }
+
+        }
+
+    }
+
+    private static void checkIfWordHaveOnlyChar(String forCheck, boolean triggerForAllowZeroLength, String errorMessage)
+            throws InvalidInputDataException {
+        if (!triggerForAllowZeroLength && forCheck.length() == 0) {
+            throw new InvalidInputDataException(errorMessage);
         }
         for (int i = 0; i < forCheck.length(); i++) {
             char tmpChar = forCheck.charAt(i);
             if (!Character.isLetter(tmpChar)) {
-                return false;
+                throw new InvalidInputDataException(errorMessage);
             }
 
         }
+        if (triggerForAllowZeroLength && forCheck.length() == 0) {
+            forCheck = " ";
+        }
 
-        return true;
     }
 
-    private static boolean checkIfWordHaveOnlyIntAndGoodLenght(String forCheck, int length) {
+    private static void checkIfWordHaveOnlyIntAndGoodLenght(String forCheck, int length, String errorMessage)
+            throws InvalidInputDataException {
         if (length != forCheck.length())
-            return false;
+            throw new InvalidInputDataException(errorMessage);
         for (int i = 0; i < forCheck.length(); i++) {
             if (!Character.isDigit(forCheck.charAt(i))) {
-                return false;
+                throw new InvalidInputDataException(errorMessage);
             }
 
         }
 
-        return true;
     }
 
 }
