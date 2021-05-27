@@ -27,8 +27,6 @@ public class Magazine extends Article {
 
     @Override
     public String toString() {
-        return super.toString() +
-                " WYDAWNICTWO: " + publisher +
-                " NUMER WYDANIA: " + issueNumber;
+        return super.toString() + " WYDAWNICTWO: " + publisher + " NUMER WYDANIA: " + issueNumber;
     }
 }

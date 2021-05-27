@@ -8,8 +8,6 @@ import article.types.Book;
 import article.types.Film;
 import article.types.Magazine;
 import user.UserProfile;
-import user.Address;
-import user.PersonalData;
 
 import java.util.Date;
 import java.util.List;
@@ -81,13 +79,14 @@ public class ArticleController {
         boolean listIsEmpty = checkIfListIsEmpty(books, magazines, films, inputNumber);
 
         if (!listIsEmpty) {
-            int id = pickId(books, magazines, films, inputNumber,  "Podaj id artykułu: ");
+            int id = pickId(books, magazines, films, inputNumber, "Podaj id artykułu: ");
             choseArticleToLend(books, magazines, films, user, inputNumber, id);
         }
 
     }
 
-    private static void choseArticleToLend(List<Book> books, List<Magazine> magazines, List<Film> films, UserProfile user, int inputNumber, int id) {
+    private static void choseArticleToLend(List<Book> books, List<Magazine> magazines, List<Film> films,
+            UserProfile user, int inputNumber, int id) {
         switch (inputNumber) {
             case 0:
                 break;
@@ -142,7 +141,8 @@ public class ArticleController {
         return id;
     }
 
-    private static boolean checkIfListIsEmpty(List<Book> books, List<Magazine> magazines, List<Film> films, int inputNumber) {
+    private static boolean checkIfListIsEmpty(List<Book> books, List<Magazine> magazines, List<Film> films,
+            int inputNumber) {
         boolean listIsEmpty = false;
         if (inputNumber == 1 && books.isEmpty())
             listIsEmpty = true;

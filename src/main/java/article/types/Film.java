@@ -27,8 +27,6 @@ public class Film extends Article {
 
     @Override
     public String toString() {
-        return super.toString() +
-                " CZAS TRWANIA: " + durationInMinutes + "min" +
-                " ROK PRODUKCJI: " + yearOfProduction;
+        return super.toString() + " CZAS TRWANIA: " + durationInMinutes + "min" + " ROK PRODUKCJI: " + yearOfProduction;
     }
 }

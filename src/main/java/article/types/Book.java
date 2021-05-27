@@ -27,8 +27,6 @@ public class Book extends Article {
 
     @Override
     public String toString() {
-        return super.toString() +
-                " ILOŚC STRON: " + numberOfPages +
-                " NUMER ISBN: " + isbnNumber;
+        return super.toString() + " ILOŚC STRON: " + numberOfPages + " NUMER ISBN: " + isbnNumber;
     }
 }
