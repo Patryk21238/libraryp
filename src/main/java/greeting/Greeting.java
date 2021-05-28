@@ -1,5 +1,5 @@
 package greeting;
 
-interface Greeting {
+public interface Greeting {
     public void printGreetingMessage();
 }
