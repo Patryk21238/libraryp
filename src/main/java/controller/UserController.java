@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 public class UserController {
     public static UserProfile pickUserByPesel(List<UserProfile> userProfiles) {
         UserProfile userProfile = new UserProfile();
-        System.out.print("Podaj numer pesel użytkownika: ");
+        System.out.print("Podaj numer pesel użytkownika\n\t:");
 
         boolean valid = true;
         do {
@@ -26,7 +26,7 @@ public class UserController {
                         .findAny().get();
                 valid = false;
             } catch (NoSuchElementException exception) {
-                System.out.println("Zły numer, wpisz ponownie \n\t");
+                System.out.println("Zły numer, wpisz ponownie \n\t:");
             }
         } while (valid);
 
@@ -35,7 +35,6 @@ public class UserController {
 
     public static UserProfile pickUserById(List<UserProfile> userProfiles, long userId) {
         UserProfile userProfile = new UserProfile();
-        System.out.print("Podaj numer pesel użytkownika: ");
 
         userProfile = userProfiles.stream().filter(u -> u.getId().equals(userId)).findAny().get();
 
@@ -59,16 +58,56 @@ public class UserController {
         personalData.setAddress(address);
         Long newId = Long.valueOf(userProfiles.size() + 1);
         userProfiles.add(new UserProfile(newId, personalData));
-        System.err.println("Poprawnie dodano użytkownika!");
+        System.err.println("Poprawnie dodano użytkownika!\n\t");
 
+    }
+
+    private static String prepareFirstName() {
+        String tmp;
+        boolean valid = true;
+        String errorMessage = "Złe imię, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swoje imię\n\t:");
+        do {
+            tmp = scannString();
+            try {
+                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
+                valid = false;
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
+            }
+
+        } while (valid);
+
+        return tmp;
+    }
+
+    private static String prepareLastName() {
+        boolean valid = true;
+        String tmp;
+        String errorMessage = "Złe nazwisko, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swoje nazwisko\n\t:");
+        do {
+            tmp = scannString();
+            try {
+                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
+                valid = false;
+            } catch (InvalidInputDataException string) {
+                valid = true;
+
+            }
+
+        } while (valid);
+
+        return tmp;
     }
 
     private static String preparePeselNumber(List<UserProfile> userProfiles) {
         String tmp;
         boolean valid = true;
         String errorMessage = "Zły pesel, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swój Pesel \n\t:");
         do {
-            System.out.printf("Wpisz swój Pesel \n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyIntAndGoodLenght(tmp, 11, errorMessage);
@@ -83,52 +122,12 @@ public class UserController {
         return tmp;
     }
 
-    private static String prepareLastName() {
-        boolean valid = true;
-        String tmp;
-        String errorMessage = "Złe nazwisko, wpisz ponownie\n\t:";
-        do {
-            System.out.printf("Wpisz swoje nazwisko\n\t:");
-            tmp = scannString();
-            try {
-                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
-                valid = false;
-            } catch (InvalidInputDataException string) {
-                valid = true;
-
-            }
-
-        } while (valid);
-
-        return tmp;
-    }
-
-    private static String prepareFirstName() {
-        String tmp;
-        boolean valid = true;
-        String errorMessage = "Złe imię, wpisz ponownie\n\t:";
-        do {
-            System.out.printf("Wpisz swoje imię\n\t:");
-            tmp = scannString();
-            try {
-                checkIfWordHaveOnlyChar(tmp, false, errorMessage);
-                valid = false;
-            } catch (InvalidInputDataException string) {
-                valid = true;
-
-            }
-
-        } while (valid);
-
-        return tmp;
-    }
-
     private static String preparePhoneNumber() {
         String tmp;
         boolean valid = true;
         String errorMessage = "Zły numer telefonu, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swój numer telefonu bez kierunkowego w formacie 9 cyfr \n\t:");
         do {
-            System.out.printf("Wpisz swój numer telefonu bez kierunkowego w formacie 9 cyfr \n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyIntAndGoodLenght(tmp, 9, errorMessage);
@@ -146,9 +145,9 @@ public class UserController {
     private static String prepareCity() {
         String tmp;
         boolean valid = true;
-        String errorMessage = "Złe miasto, wpisz ponownie";
+        String errorMessage = "Złe miasto, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swoje miasto/miejscowość zamieszkania \n\t:");
         do {
-            System.out.printf("Wpisz swoje miasto/miejscowość zamieszkania \n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyChar(tmp, false, errorMessage);
@@ -165,9 +164,9 @@ public class UserController {
     private static String prepareStreet() {
         String tmp;
         boolean valid = true;
-        String errorMessage = "Zła ulica  , wpisz ponownie";
+        String errorMessage = "Zła ulica, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swoją ulice lub pomiń gdy nie masz takowej \n\t:");
         do {
-            System.out.printf("Wpisz swoją ulice lub pomiń gdy nie masz takowej \n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyChar(tmp, true, errorMessage);
@@ -183,10 +182,10 @@ public class UserController {
     private static String prepareBuildingNumber() {
         String tmp;
         boolean valid = true;
-        String errorMessage = "Zły numer domu , wpisz ponownie";
+        String errorMessage = "Zły numer domu, wpisz ponownie\n\t:";
+        System.out.printf(
+                "Wpisz swój numer domu w formacie 3 cyfr. Jeśli twój numer domu to przykładowo 20 to wpisz 020\n\t:");
         do {
-            System.out.printf(
-                    "Wpisz swój numer domu w formacie 3 cyfr. Jeśli twój numer domu to przykładowo 20 to wpisz 020\n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyIntAndGoodLenght(tmp, 3, errorMessage);
@@ -202,9 +201,9 @@ public class UserController {
     private static String prepareZipCode() {
         String tmp;
         boolean valid = true;
-        String errorMessage = "Zły kod pocztowy , wpisz ponownie";
+        String errorMessage = "Zły kod pocztowy, wpisz ponownie\n\t:";
+        System.out.printf("Wpisz swój kod pocztowy składający się z samych cyfr\n\t:");
         do {
-            System.out.printf("Wpisz swój kod pocztowy składający się z samych cyfr\n\t:");
             tmp = scannString();
             try {
                 checkIfWordHaveOnlyIntAndGoodLenght(tmp, 5, errorMessage);
@@ -234,7 +233,7 @@ public class UserController {
             if (inputNumber > 0 && inputNumber <= numberOfUser) {
                 break;
             }
-            System.out.printf("Podałeś zły numer!\n\t:");
+            System.out.printf("Podaj prawidłową wartość!\n\t:");
 
         } while (true);
         UserProfile chooseUserProfile = userProfiles.get(inputNumber - 1);
@@ -249,7 +248,7 @@ public class UserController {
         for (Integer id : chooseUserProfile.getBorrowedBooksId()) {
             System.out.printf("Id:" + id + ". " + books.get(id) + " \n\t");
         }
-        System.out.printf("\n\tWyświetlam pożyczone magazyny\n\t:");
+        System.out.printf("\n\tWyświetlam pożyczone Czasopisma\n\t:");
         for (Integer id : chooseUserProfile.getBorrowedMagazinesId()) {
             System.out.printf("Id:" + id + ". " + magazines.get(id) + " \n\t");
         }

@@ -18,8 +18,8 @@ public class FunctionsToUseInThisPackage {
                 tmp = scann.nextInt();
                 valid = false;
             } catch (InputMismatchException exception) {
-                System.out.println("Wrong number! Type again \n\t");
                 scann.nextLine();
+                System.out.println("Podaj prawidłową wartość:");
             }
         } while (valid);
 

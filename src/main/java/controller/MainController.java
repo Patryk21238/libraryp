@@ -54,7 +54,7 @@ public class MainController {
                 UserController.showUserInfo(userProfiles, books, magazines, films);
                 break;
             default:
-                System.err.println("Podaj prawidłową wartość!");
+                System.err.println("Podaj prawidłową wartość!\n\t:");
                 break;
         }
     }
