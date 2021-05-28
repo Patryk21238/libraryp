@@ -7,13 +7,12 @@ import user.Address;
 import user.PersonalData;
 import user.UserProfile;
 
-import static controller.PackageRangeFunctions.scannInt;
-import static controller.PackageRangeFunctions.scannString;
+import static controller.FunctionsToUseInThisPackage.scannInt;
+import static controller.FunctionsToUseInThisPackage.scannString;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-// do ogarniecia jeszcze 
 public class UserController {
     public static UserProfile pickUserByPesel(List<UserProfile> userProfiles) {
         UserProfile userProfile = new UserProfile();

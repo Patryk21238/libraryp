@@ -5,7 +5,7 @@ import article.types.Film;
 import article.types.Magazine;
 import user.UserProfile;
 
-import static controller.PackageRangeFunctions.scannInt;
+import static controller.FunctionsToUseInThisPackage.scannInt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +14,12 @@ public class MainController {
     public void appController() {
         List<UserProfile> userProfiles = new ArrayList<>();
         List<Book> books = new ArrayList<>();
-        ;
         List<Magazine> magazines = new ArrayList<>();
-        ;
         List<Film> films = new ArrayList<>();
-        ;
+
         int inputNumber;
         do {
+            GreetingController.randomlySelectClassToUse();
             System.out.printf(selectProgramActionMessage);
             inputNumber = scannInt();
             selectProgramAction(inputNumber, userProfiles, books, magazines, films);

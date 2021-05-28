@@ -1,7 +1,7 @@
 package controller;
 
-import static controller.PackageRangeFunctions.scannInt;
-import static controller.PackageRangeFunctions.scannString;
+import static controller.FunctionsToUseInThisPackage.scannInt;
+import static controller.FunctionsToUseInThisPackage.scannString;
 
 import article.ArticleStatus;
 import article.types.Book;

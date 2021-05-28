@@ -3,7 +3,7 @@ package controller;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class PackageRangeFunctions {
+public class FunctionsToUseInThisPackage {
     public static String scannString() {
         Scanner scann = new Scanner(System.in);
         return scann.nextLine();
